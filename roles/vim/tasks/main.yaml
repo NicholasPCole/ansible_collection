@@ -1,4 +1,10 @@
 ---
+- name: Install Vim.
+  ansible.builtin.package:
+    name: vim
+    state: present
+  become: "{{ False if ansible_system == 'Darwin' else True }}"
+
 - name: Configure Vim.
   ansible.builtin.copy:
     src: .vimrc

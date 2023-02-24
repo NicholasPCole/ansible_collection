@@ -1,5 +1,11 @@
 ---
-- name: Configure screen.
+- name: Install Screen.
+  ansible.builtin.package:
+    name: screen
+    state: present
+  become: "{{ False if ansible_system == 'Darwin' else True }}"
+
+- name: Configure Screen.
   ansible.builtin.copy:
     src: .screenrc
     dest: "{{ ansible_user_dir }}/.screenrc"
