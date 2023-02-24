@@ -1,0 +1,22 @@
+---
+- name: Install and configure Chrony.
+  when: ansible_system == "Linux"
+  block:
+    - name: Include operating system family variables.
+      include_vars: "{{ ansible_os_family }}.yaml"
+
+    - name: Install Chrony.
+      ansible.builtin.package:
+        name: chrony
+        state: present
+      become: true
+
+    - name: Configure Chrony.
+      ansible.builtin.template:
+        src: chrony.conf.j2
+        dest: "{{ chrony_configuration_file }}"
+        mode: '0644'
+        owner: root
+        group: root
+      become: true
+      notify: Restart Chrony.

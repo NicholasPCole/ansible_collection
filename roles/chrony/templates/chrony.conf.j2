@@ -1,0 +1,8 @@
+driftfile {{ chrony_drift_file }}
+keyfile {{ chrony_key_file }}
+leapsectz right/UTC
+logdir /var/log/chrony
+makestep 1.0 3
+ntsdumpdir /var/lib/chrony
+pool time.cloudflare.com iburst nts
+rtcsync
