@@ -1,0 +1,8 @@
+---
+- name: Configure Vim.
+  ansible.builtin.copy:
+    src: .vimrc
+    dest: "{{ ansible_user_dir }}/.vimrc"
+    mode: '0644'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ primary_user_group }}"

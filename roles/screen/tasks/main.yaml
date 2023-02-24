@@ -1,0 +1,8 @@
+---
+- name: Configure screen.
+  ansible.builtin.copy:
+    src: .screenrc
+    dest: "{{ ansible_user_dir }}/.screenrc"
+    mode: '0644'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ primary_user_group }}"
