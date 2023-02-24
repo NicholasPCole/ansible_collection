@@ -1,0 +1,23 @@
+---
+- name: Configure git (global).
+  ansible.builtin.template:
+    src: .gitconfig.j2
+    dest: "{{ git_configuration_file_path }}"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ primary_user_group }}"
+    mode: '0644'
+
+- name: Create the git configuration directory.
+  ansible.builtin.file:
+    path: "{{ git_configuration_directory }}"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ primary_user_group }}"
+    mode: '0755'
+
+- name: Configure allowed SSH signers.
+  ansible.builtin.template:
+    src: allowed_signers.j2
+    dest: "{{ git_configuration_directory }}/allowed_signers"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ primary_user_group }}"
+    mode: '0644'

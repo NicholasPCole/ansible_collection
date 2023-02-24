@@ -1,0 +1,3 @@
+{% for signer in git_ssh_allowed_signers %}
+{{ git_user_email }} {{ signer }}
+{% endfor %}
