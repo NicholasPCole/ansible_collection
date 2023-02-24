@@ -1,0 +1,33 @@
+---
+- name: Include system variables (macOS).
+  ansible.builtin.include_vars: "{{ ansible_system }}.yaml"
+  when: ansible_system == "Darwin"
+
+- name: Include OS family variables (Linux).
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yaml"
+  when: ansible_system == "Linux"
+
+- name: Create the SSH client configuration directory.
+  ansible.builtin.file:
+    path: "{{ ssh_client_configuration_directory }}"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ primary_user_group }}"
+    mode: '0700'
+
+- name: Template SSH authorized keys.
+  ansible.builtin.template:
+    src: authorized_keys.j2
+    dest: "{{ ssh_client_configuration_directory }}/authorized_keys"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ primary_user_group }}"
+    mode: '0600'
+
+- name: Configure the SSH server.
+  ansible.builtin.template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    mode: '0600'
+    owner: root
+    group: "{{ root_user_group }}"
+  become: true
+  notify: Restart the SSH server.

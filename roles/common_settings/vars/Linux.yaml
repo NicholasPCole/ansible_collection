@@ -1,0 +1,3 @@
+---
+primary_user_group: "{{ ansible_user_id }}"
+root_user_group: root

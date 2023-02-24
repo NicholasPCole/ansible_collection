@@ -1,0 +1,3 @@
+---
+sftp_subsystem_path: /usr/lib/openssh/sftp-server
+ssh_service_name: ssh.service

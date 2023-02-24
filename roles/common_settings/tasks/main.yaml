@@ -1,0 +1,3 @@
+---
+- name: Include system variables.
+  ansible.builtin.include_vars: "{{ ansible_system }}.yaml"
