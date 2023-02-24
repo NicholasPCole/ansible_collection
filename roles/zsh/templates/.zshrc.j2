@@ -1,0 +1,112 @@
+#===============================================================================
+#    Shell Prompt
+#===============================================================================
+
+function prompt_username {
+    if [ "$(whoami)" = "{{ ansible_user_id }}" ]; then echo ""; else echo "$(whoami)@"; fi
+}
+
+function prompt_character {
+    if [ $UID -eq 0 ]; then echo "#"; else echo "$"; fi
+}
+
+{% if zsh_vanity_hostname is defined %}
+{%- raw -%}PROMPT="(%D{%H:%M:%S}%)[$(prompt_username){%- endraw -%}{{ zsh_vanity_hostname }}{%- raw -%}:%B%U%~%u%b]$(prompt_character) "{%- endraw -%}
+{% else %}
+{%- raw -%}PROMPT="(%D{%H:%M:%S}%)[$(prompt_username)%m:%B%U%~%u%b]$(prompt_character) "{%- endraw -%}
+{% endif %}
+
+TMOUT=1
+TRAPALRM() {
+    zle reset-prompt
+}
+
+#===============================================================================
+#    Shell Configuration: Changing Directories (16.2.1)
+#===============================================================================
+
+setopt AUTO_CD
+
+#===============================================================================
+#    Shell Configuration: Completion (16.2.2)
+#===============================================================================
+
+setopt AUTO_LIST
+setopt AUTO_MENU
+setopt LIST_PACKED
+
+#===============================================================================
+#    Shell Configuration: Expansion and Globbing (16.2.3)
+#===============================================================================
+
+setopt EXTENDED_GLOB
+setopt NOMATCH
+setopt NUMERIC_GLOB_SORT
+
+#===============================================================================
+#    Shell Configuration: History (16.2.4)
+#===============================================================================
+
+HISTFILE=~/.zsh_history
+HISTSIZE=5000
+SAVEHIST=5000
+
+setopt APPEND_HISTORY
+setopt EXTENDED_HISTORY
+setopt HIST_IGNORE_SPACE
+setopt INC_APPEND_HISTORY
+setopt SHARE_HISTORY
+
+#===============================================================================
+#    Shell Configuration: Initialisation (16.2.5)
+#===============================================================================
+
+#===============================================================================
+#    Shell Configuration: Input/Output (16.2.6)
+#===============================================================================
+
+setopt CORRECT
+setopt RM_STAR_WAIT
+
+#===============================================================================
+#    Shell Configuration: Job Control (16.2.7)
+#===============================================================================
+
+setopt NOTIFY
+
+#===============================================================================
+#    Environment Variables
+#===============================================================================
+
+export CLICOLOR=1
+export EDITOR="vim"
+
+#===============================================================================
+#    Aliases
+#===============================================================================
+
+# Enable color support of ls and other commands.
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+#===============================================================================
+#    ...
+#===============================================================================
+
+bindkey -e
+
+zstyle :compinstall filename "${HOME}/.zshrc"
+autoload -Uz compinit
+compinit
+
+if [[ -d {{ zsh_configuration_directory }} ]] && [[ "$(ls -A {{ zsh_configuration_directory }})" ]]; then
+  for file in "{{ zsh_configuration_directory }}"/*; do
+    source "${file}"
+  done
+fi

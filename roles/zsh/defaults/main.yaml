@@ -1,0 +1,2 @@
+---
+zsh_configuration_directory: "{{ ansible_user_dir }}/.zshrc.d"

@@ -1,0 +1,29 @@
+---
+- name: Install Zsh.
+  ansible.builtin.package:
+    name: zsh
+    state: present
+  become: "{{ False if ansible_system == 'Darwin' else True }}"
+
+- name: Create the Zsh configuration directory.
+  ansible.builtin.file:
+    path: "{{ zsh_configuration_directory }}"
+    state: directory
+    mode: '0700'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ primary_user_group }}"
+
+- name: Template the main configuration file.
+  ansible.builtin.template:
+    src: .zshrc.j2
+    dest: "{{ ansible_user_dir }}/.zshrc"
+    mode: '0700'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ primary_user_group }}"
+
+- name: Set Zsh as the login shell.
+  ansible.builtin.user:
+    name: "{{ ansible_user_id }}"
+    shell: /bin/zsh
+  become: True
+  when: ansible_system == "Linux"
