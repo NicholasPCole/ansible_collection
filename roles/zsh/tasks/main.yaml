@@ -25,5 +25,5 @@
   ansible.builtin.user:
     name: "{{ ansible_user_id }}"
     shell: /bin/zsh
-  become: True
+  become: true
   when: ansible_system == "Linux"

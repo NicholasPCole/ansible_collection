@@ -2,4 +2,4 @@
 - name: Set the timezone.
   community.general.timezone:
     name: "{{ timezone }}"
-  become: True
+  become: true

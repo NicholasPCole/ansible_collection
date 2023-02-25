@@ -3,5 +3,5 @@
   ansible.builtin.systemd:
     name: chronyd
     state: restarted
-    enabled: yes
+    enabled: true
   become: true
