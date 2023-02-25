@@ -3,5 +3,8 @@
   ansible.builtin.copy:
     src: dnf.conf
     dest: /etc/dnf/dnf.conf
+    owner: root
+    group: "{{ root_user_group }}"
+    mode: '0644'
   become: true
   when: ansible_os_family == "RedHat"

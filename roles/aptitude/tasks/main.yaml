@@ -12,8 +12,14 @@
       ansible.builtin.file:
         path: "{{ aptitude_configuration_directory }}"
         state: directory
+        owner: "{{ ansible_user_id }}"
+        group: "{{ primary_user_group }}"
+        mode: '0755'
 
     - name: Configure aptitude.
       ansible.builtin.copy:
         src: aptitude.config
         dest: "{{ aptitude_configuration_file }}"
+        owner: "{{ ansible_user_id }}"
+        group: "{{ primary_user_group }}"
+        mode: '0644'
