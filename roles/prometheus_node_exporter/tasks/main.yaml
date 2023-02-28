@@ -1,0 +1,33 @@
+---
+- name: Include system variables.
+  ansible.builtin.include_vars: "{{ ansible_system }}.yaml"
+
+- name: Include OS family variables (Linux).
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yaml"
+  when: ansible_system == "Linux"
+
+- name: Install node_exporter.
+  ansible.builtin.package:
+    name: "{{ prometheus_node_exporter_package_name }}"
+    state: present
+  become: "{{ False if ansible_system == 'Darwin' else True }}"
+
+- name: Template the node_exporter environment file.
+  ansible.builtin.template:
+    src: prometheus-node-exporter.j2
+    dest: "{{ prometheus_node_exporter_environment_path }}"
+    owner: "{{ ansible_user_id if ansible_system == 'Darwin' else 'root' }}"
+    group: "{{ primary_user_group if ansible_system == 'Darwin' else 'root' }}"
+    mode: '0644'
+  become: "{{ False if ansible_system == 'Darwin' else True }}"
+  notify:
+    - Restart node_exporter (Linux).
+    - Restart node_exporter (macOS).
+
+- name: Template a script to show metrics.
+  ansible.builtin.template:
+    src: show-node-exporter-metrics.sh.j2
+    dest: "{{ scripts_directory }}/show-node-exporter-metrics.sh"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ primary_user_group }}"
+    mode: '0755'

@@ -1,0 +1,56 @@
+{% if ansible_system == "Linux" %}
+{% raw -%}
+# Set the command-line arguments to pass to the server.
+# Due to shell escaping, to pass backslashes for regexes, you need to double
+# them (\\d for \d). If running under systemd, you need to double them again
+# (\\\\d to mean \d), and escape newlines too.
+{% endraw %}
+
+ARGS='{% endif %}--collector.disable-defaults
+--collector.cpu
+--collector.diskstats
+--collector.filesystem
+--collector.loadavg
+--collector.meminfo
+--collector.netdev
+--collector.powersupplyclass
+--collector.time
+--collector.uname
+--web.listen-address={{ prometheus_node_exporter_listen_address }}:9100
+{% if ansible_system == "Darwin" %}
+--collector.boottime
+--collector.filesystem.mount-points-exclude="^(/System/Volumes|/Volumes/com.apple.TimeMachine.localsnapshots)/"
+--collector.netdev.device-include={{ ansible_default_ipv4['interface'] }}
+{% elif ansible_system == "Linux" %}
+--collector.arp
+--collector.conntrack
+--collector.cpufreq
+--collector.entropy
+--collector.filefd
+--collector.hwmon
+--collector.interrupts
+--collector.logind
+--collector.netclass
+--collector.netstat
+--collector.network_route
+--collector.pressure
+--collector.processes
+--collector.stat
+--collector.systemd
+--collector.tcpstat
+--collector.thermal_zone
+--collector.timex
+{% if ansible_interfaces is search("wl[a-z0-9]+") %}
+--collector.wifi
+{% endif %}
+{% if ansible_os_family == "RedHat" %}
+{# The Fedora package offers several features not yet available in the Debian package. #}
+--collector.diskstats.ignored-devices="^(dm-{{ "\\\\d" }}+|zram{{ "\\\\d" }}+)$"
+--collector.dmi
+--collector.ethtool
+--collector.ethtool.device-include="^({{ ansible_default_ipv4['interface'] }})$"
+--collector.netdev.device-include="^(en|vmbr|wg|wl)"
+--collector.nvme
+--collector.os
+{% endif %}
+{% endif %}{% if ansible_system == "Linux" %}'{% endif %}

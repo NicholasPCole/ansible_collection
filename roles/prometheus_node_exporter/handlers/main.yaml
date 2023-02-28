@@ -1,0 +1,12 @@
+---
+- name: Restart node_exporter (Linux).
+  ansible.builtin.service:
+    name: "{{ prometheus_node_exporter_service_name }}"
+    state: restarted
+    enabled: true
+  become: true
+  when: ansible_system == "Linux"
+
+- name: Restart node_exporter (macOS).
+  ansible.builtin.command: brew services restart {{ prometheus_node_exporter_service_name }}
+  when: ansible_system == "Darwin"
