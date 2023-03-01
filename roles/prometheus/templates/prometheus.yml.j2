@@ -1,0 +1,15 @@
+global:
+  scrape_interval: 1m
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets:
+{% for host in groups['leader'] %}
+          - {{ hostvars[host]['prometheus_hostname'] }}:9090
+{% endfor %}
+  - job_name: node
+    static_configs:
+      - targets:
+{% for host in groups['all'] %}
+          - {{ hostvars[host]['prometheus_hostname'] }}:9100
+{% endfor %}
