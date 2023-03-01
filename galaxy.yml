@@ -1,8 +1,19 @@
 authors:
   - Nicholas P. Cole
+description: Sample Ansible collection for some personal systems.
 license:
   - MIT
 name: systems
 namespace: nicholaspcole
 readme: README.md
+repository: https://github.com/NicholasPCole/ansible_collection
+tags:
+  - application
+  - cloud
+  - infrastructure
+  - linux
+  - monitoring
+  - networking
+  - security
+  - tools
 version: 0.1.0

@@ -3,7 +3,7 @@
   when: ansible_system == "Linux"
   block:
     - name: Include operating system family variables.
-      include_vars: "{{ ansible_os_family }}.yaml"
+      ansible.builtin.include_vars: "{{ ansible_os_family }}.yaml"
 
     - name: Install Chrony.
       ansible.builtin.package:
