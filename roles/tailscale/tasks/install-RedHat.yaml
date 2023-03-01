@@ -1,0 +1,18 @@
+---
+- name: Add the Tailscale GPG key (Red Hat).
+  ansible.builtin.rpm_key:
+    key: "{{ tailscale_gpg_key_url }}"
+    state: present
+  become: true
+
+- name: Add the Tailscale repo (Red Hat).
+  ansible.builtin.yum_repository:
+    name: tailscale
+    description: Tailscale
+    baseurl: https://pkgs.tailscale.com/stable/fedora/$basearch
+    enabled: true
+    gpgcheck: false
+    repo_gpgcheck: true
+    gpgkey: "{{ tailscale_gpg_key_url }}"
+    state: present
+  become: true

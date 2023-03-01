@@ -1,0 +1,8 @@
+---
+- name: Restart Tailscale.
+  ansible.builtin.service:
+    name: tailscaled
+    state: restarted
+    enabled: true
+  become: true
+  when: ansible_system == "Linux"

@@ -1,0 +1,19 @@
+---
+- name: Install pre-requisite packages (Debian).
+  ansible.builtin.package:
+    name: apt-transport-https
+    state: present
+  become: true
+
+- name: Add the Tailscale GPG key (Debian).
+  ansible.builtin.apt_key:
+    url: "{{ tailscale_gpg_key_url }}"
+    state: present
+  become: true
+
+- name: Add the Tailscale repo (Debian).
+  ansible.builtin.apt_repository:
+    repo: deb https://pkgs.tailscale.com/stable/debian stretch main
+    filename: tailscale
+    state: present
+  become: true

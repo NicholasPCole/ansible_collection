@@ -1,0 +1,17 @@
+---
+- name: Include OS family variables (Linux).
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yaml"
+  when: ansible_system == "Linux"
+
+- name: Include per-OS family tasks.
+  ansible.builtin.include_tasks: install-{{ ansible_os_family }}.yaml
+  when: ansible_system == "Linux"
+
+- name: Install the Tailscale package (Linux).
+  ansible.builtin.package:
+    name: tailscale
+    state: present
+  become: true
+  when: ansible_system == "Linux"
+  notify:
+    - Restart Tailscale.
