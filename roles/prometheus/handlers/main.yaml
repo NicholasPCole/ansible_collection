@@ -1,4 +1,11 @@
 ---
+- name: Reload Prometheus.
+  ansible.builtin.service:
+    name: prometheus.service
+    state: reloaded
+    enabled: true
+  become: true
+
 - name: Restart Prometheus.
   ansible.builtin.service:
     name: prometheus.service
