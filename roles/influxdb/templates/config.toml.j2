@@ -1,3 +1,7 @@
 bolt-path = "{{ influxdb_data_directory }}/influxd.bolt"
 engine-path = "{{ influxdb_data_directory }}/engine"
 http-bind-address = "{{ influxdb_listen_address }}:8086"
+{% if influxdb_certificate_file_path is defined %}
+tls-cert = "{{ influxdb_certificate_file_path }}"
+tls-key = "{{ influxdb_certificate_key_path }}"
+{% endif %}

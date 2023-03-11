@@ -5,7 +5,13 @@ domain = {{ grafana_domain }}
 enable_gzip = true
 enforce_domain = true
 http_addr = {{ grafana_listen_address }}
+{% if grafana_certificate_file_path is defined %}
+protocol = h2
+cert_file = {{ grafana_certificate_file_path }}
+cert_key = {{ grafana_certificate_key_path }}
+{% else %}
 protocol = http
+{% endif %}
 
 [analytics]
 feedback_links_enabled = false
@@ -40,13 +46,12 @@ enabled = true
 enabled = true
 
 [security]
-;cookie_samesite = lax
-;cookie_secure = false
-;strict_transport_security = false
-;strict_transport_security_preload = false
-;strict_transport_security_subdomains = true
+cookie_samesite = strict
 disable_initial_admin_creation = true
 secret_key = {{ grafana_secret_key }}
+{% if grafana_certificate_file_path is defined %}
+cookie_secure = true
+{% endif %}
 
 [users]
 allow_org_create = false
