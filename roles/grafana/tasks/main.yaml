@@ -1,0 +1,50 @@
+---
+- name: Include OS family variables (Linux).
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yaml"
+  when: ansible_system == "Linux"
+
+- name: Add the Grafana GPG key (Red Hat).
+  ansible.builtin.rpm_key:
+    key: "{{ grafana_gpg_key_url }}"
+    state: present
+  become: true
+
+- name: Add the Grafana repo (Red Hat).
+  ansible.builtin.yum_repository:
+    name: grafana
+    description: Grafana
+    baseurl: https://rpm.grafana.com
+    enabled: true
+    gpgcheck: true
+    repo_gpgcheck: true
+    gpgkey: "{{ grafana_gpg_key_url }}"
+    state: present
+  become: true
+
+- name: Install the Grafana package (Linux).
+  ansible.builtin.package:
+    name: grafana-enterprise
+    state: present
+  become: true
+  when: ansible_system == "Linux"
+  notify: Restart Grafana.
+
+- name: Configure Grafana.
+  ansible.builtin.template:
+    src: grafana.ini.j2
+    dest: "{{ grafana_configuration_file }}"
+    mode: '0640'
+    owner: root
+    group: grafana
+  become: true
+  notify: Restart Grafana.
+
+- name: Provision datasources.
+  ansible.builtin.template:
+    src: provisioning.yaml.j2
+    dest: "{{ grafana_provisioning_datasources_directory }}/provisioning.yaml"
+    owner: root
+    group: grafana
+    mode: '0640'
+  become: true
+  notify: Restart Grafana.

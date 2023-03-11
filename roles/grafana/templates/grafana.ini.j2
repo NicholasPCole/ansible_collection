@@ -1,0 +1,55 @@
+instance_name = {{ grafana_domain }}
+
+[server]
+domain = {{ grafana_domain }}
+enable_gzip = true
+enforce_domain = true
+http_addr = {{ grafana_listen_address }}
+protocol = http
+
+[analytics]
+feedback_links_enabled = false
+
+[dashboards]
+versions_to_keep = 100
+
+[database]
+host = {{ grafana_database_host }}
+name = {{ grafana_database_name }}
+password = {{ grafana_database_password }}
+type = mysql
+user = {{ grafana_database_username }}
+
+[explore]
+enabled = true
+
+[feature_highlights]
+enabled = true
+
+[help]
+enabled = true
+
+[metrics]
+; basic_auth_password =
+; basic_auth_username =
+
+[profile]
+enabled = true
+
+[query_history]
+enabled = true
+
+[security]
+;cookie_samesite = lax
+;cookie_secure = false
+;strict_transport_security = false
+;strict_transport_security_preload = false
+;strict_transport_security_subdomains = true
+disable_initial_admin_creation = true
+secret_key = {{ grafana_secret_key }}
+
+[users]
+allow_org_create = false
+allow_sign_up = false
+default_theme = system
+verify_email_enabled = false

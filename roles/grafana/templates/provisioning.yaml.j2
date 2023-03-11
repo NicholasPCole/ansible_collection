@@ -1,0 +1,13 @@
+apiVersion: 1
+datasources:
+{% for host in groups['leader'] %}
+  - name: Prometheus
+    type: prometheus
+    uid: prometheus
+    access: proxy
+    url: http://{{ prometheus_hostname }}:9090
+    jsonData:
+      prometheusType: Prometheus
+      prometheusVersion: 2.32.0
+      timeInterval: 1m
+{% endfor %}
