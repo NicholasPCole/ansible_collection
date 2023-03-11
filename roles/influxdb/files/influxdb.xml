@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>InfluxDB</short>
+  <description>The InfluxDB time series platform is purpose-built to collect, store, process and visualize metrics and events.</description>
+  <port protocol="tcp" port="8086"/>
+</service>

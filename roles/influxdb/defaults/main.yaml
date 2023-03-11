@@ -1,0 +1,6 @@
+---
+firewalld_user_services_directory: /etc/firewalld/services
+influxdb_configuration_directory: /etc/influxdb
+influxdb_configuration_file_path: "{{ influxdb_configuration_directory }}/config.toml"
+influxdb_data_directory: /var/lib/influxdb
+influxdb_listen_address: 127.0.0.1

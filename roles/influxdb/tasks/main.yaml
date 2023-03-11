@@ -1,0 +1,67 @@
+---
+- name: Include OS family variables (Linux).
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yaml"
+  when: ansible_system == "Linux"
+
+- name: Add the InfluxData GPG key (Red Hat).
+  ansible.builtin.rpm_key:
+    key: "{{ influxdata_gpg_key_url }}"
+    state: present
+  become: true
+
+- name: Add the InfluxData repo (Red Hat).
+  ansible.builtin.yum_repository:
+    name: influxdata
+    description: InfluxData
+    baseurl: https://repos.influxdata.com/stable/{{ ansible_architecture }}/main
+    enabled: true
+    gpgcheck: true
+    gpgkey: "{{ influxdata_gpg_key_url }}"
+    state: present
+  become: true
+
+- name: Install InfluxDB (Linux).
+  ansible.builtin.package:
+    name:
+      - influxdb2
+      - influxdb2-cli
+    state: present
+  become: true
+  when: ansible_system == "Linux"
+  notify: Restart InfluxDB.
+
+- name: Configure InfluxDB.
+  ansible.builtin.template:
+    src: config.toml.j2
+    dest: "{{ influxdb_configuration_file_path }}"
+    mode: '0644'
+    owner: root
+    group: root
+  become: true
+  notify: Restart InfluxDB.
+
+- name: Configure the firewalld service.
+  ansible.builtin.copy:
+    src: influxdb.xml
+    dest: "{{ firewalld_user_services_directory }}/influxdb.xml"
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  when: ansible_os_family == "RedHat"
+  register: configure_firewalld_service
+
+- name: Pause for the modified firewalld service to become available.
+  ansible.builtin.pause:
+    seconds: 5
+  when: configure_firewalld_service is changed
+
+- name: Allow InfluxDB traffic in firewalld.
+  ansible.posix.firewalld:
+    zone: internal
+    service: influxdb
+    permanent: true
+    immediate: true
+    state: enabled
+  become: true
+  when: ansible_os_family == "RedHat"
