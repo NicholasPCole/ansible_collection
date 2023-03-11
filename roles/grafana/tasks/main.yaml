@@ -48,3 +48,13 @@
     mode: '0640'
   become: true
   notify: Restart Grafana.
+
+- name: Allow Grafana traffic in firewalld.
+  ansible.posix.firewalld:
+    zone: internal
+    service: grafana
+    permanent: true
+    immediate: true
+    state: enabled
+  become: true
+  when: ansible_os_family == "RedHat"

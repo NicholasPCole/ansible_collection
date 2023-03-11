@@ -31,3 +31,13 @@
     owner: "{{ ansible_user_id }}"
     group: "{{ primary_user_group }}"
     mode: '0755'
+
+- name: Allow node_exporter traffic in firewalld.
+  ansible.posix.firewalld:
+    zone: internal
+    service: prometheus-node-exporter.xml
+    permanent: true
+    immediate: true
+    state: enabled
+  become: true
+  when: ansible_os_family == "RedHat"
