@@ -5,11 +5,11 @@ scrape_configs:
     static_configs:
       - targets:
 {% for host in groups['leader'] %}
-          - {{ hostvars[host]['prometheus_hostname'] }}:9090
+          - {{ hostvars[host]['prometheus_target_hostname'] }}:9090
 {% endfor %}
   - job_name: node
     static_configs:
       - targets:
 {% for host in groups['all'] %}
-          - {{ hostvars[host]['prometheus_hostname'] }}:9100
+          - {{ hostvars[host]['prometheus_target_hostname'] }}:9100
 {% endfor %}
